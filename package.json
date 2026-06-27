@@ -1,0 +1,17 @@
+{
+  "name": "dangdang-pawnshop",
+  "version": "1.0.0",
+  "description": "当当时间当铺 · 前端 + 安全后端全栈项目",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["deepseek", "express", "proxy"],
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

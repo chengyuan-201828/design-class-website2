@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>当当时间当铺 · 橘猫老板的治愈小铺</title>
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome v6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            shop: {
+              cream: '#FFF8F0',
+              warm: '#FEF3C7',
+              amber: '#F59E0B',
+              orange: '#F97316',
+              brown: '#92400E',
+              wood: '#78350F',
+            }
+          },
+          fontFamily: {
+            display: ['"Noto Serif SC"', 'Georgia', 'serif'],
+            sans: ['"Noto Sans SC"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'shop': '0 4px 24px -4px rgba(245, 158, 11, 0.18)',
+            'shop-lg': '0 8px 32px -8px rgba(249, 115, 22, 0.22)',
+            'inner-warm': 'inset 0 2px 8px rgba(146, 64, 14, 0.06)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(251, 191, 36, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    }
+    .tab-btn:not(:disabled):not(.active):hover {
+      background: rgba(251, 191, 36, 0.25);
+      transform: translateY(-1px);
+    }
+    .tab-btn:not(:disabled):active {
+      transform: translateY(0) scale(0.98);
+    }
+    /* Tab 内容淡入淡出 */
+    .tab-panel {
+      display: none;
+      opacity: 0;
+    }
+    .tab-panel.is-visible {
+      display: block;
+    }
+    .tab-panel.fade-out {
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    @keyframes tabEnter {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .tab-panel.fade-in {
+      opacity: 1;
+      animation: tabEnter 0.35s ease-out both;
+    }
+    /* 通用 PC 端按钮微交互 */
+    .btn-interactive {
+      transition: all 0.2s ease;
+    }
+    .btn-interactive:not(:disabled):hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.28);
+    }
+    .btn-interactive:not(:disabled):active {
+      transform: translateY(0) scale(0.97);
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.18);
+    }
+    /* 卡片悬停 */
+    .card-interactive {
+      transition: all 0.2s ease;
+    }
+    .card-interactive:not(.disabled):hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.16);
+      border-color: #F97316;
+    }
+    .card-interactive:not(.disabled):active {
+      transform: translateY(-1px) scale(0.99);
+    }
+    .record-scroll {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #FCD34D #FEF3C7;
+      pointer-events: auto;
+    }
+    .record-scroll::-webkit-scrollbar { width: 6px; }
+    .record-scroll::-webkit-scrollbar-track { background: #FEF3C7; border-radius: 3px; }
+    .record-scroll::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.45);
+      border-radius: 3px;
+      transition: background 0.2s ease;
+    }
+    .record-scroll:hover::-webkit-scrollbar-thumb { background: #F59E0B; }
+    /* 顶部 Q 版橘猫头像 · 复古圆形底 */
+    .cat-avatar-ring {
+      background: radial-gradient(circle at 35% 30%, #FDE68A 0%, #F59E0B 55%, #D97706 100%);
+      box-shadow:
+        0 4px 14px rgba(217, 119, 6, 0.35),
+        inset 0 2px 6px rgba(255, 255, 255, 0.45),
+        inset 0 -3px 8px rgba(146, 64, 14, 0.15);
+    }
+    /* 左侧对话气泡 · 三角指向猫咪 */
+    .retro-bubble {
+      position: relative;
+      background: linear-gradient(160deg, #FFFBEB 0%, #FEF3C7 100%);
+      border: 2px solid #FCD34D;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    .retro-bubble::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 16px;
+      height: 16px;
+      background: #FFFBEB;
+      border-top: 2px solid #FCD34D;
+      border-left: 2px solid #FCD34D;
+    }
+    /* 余额框琥珀高亮 */
+    .balance-box {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #FCD34D 100%);
+      border: 2px solid #F59E0B;
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    .task-card {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .task-card.selected {
+      border-color: #F97316 !important;
+      border-width: 3px !important;
+      background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%) !important;
+      box-shadow:
+        0 8px 28px rgba(249, 115, 22, 0.32),
+        0 0 0 4px rgba(249, 115, 22, 0.18) !important;
+      transform: translateY(-2px);
+    }
+    .task-card.selected .task-check {
+      display: flex;
+    }
+    .task-check {
+      display: none;
+    }
+    .task-card.disabled { cursor: not-allowed; opacity: 0.55; pointer-events: none; }
+    .custom-task-card {
+      transition: all 0.2s ease;
+    }
+    .custom-task-card.disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .custom-task-card:not(.disabled):hover {
+      border-color: #F97316;
+      box-shadow: 0 6px 18px rgba(249, 115, 22, 0.12);
+    }
+    .btn-custom-delete:not(:disabled):hover {
+      color: #DC2626;
+      background: rgba(254, 226, 226, 0.8);
+    }
+    /* AI 聊天悬浮组件 */
+    #ai-chat-fab {
+      animation: fab-breathe 3.2s ease-in-out infinite;
+      box-shadow:
+        0 8px 28px rgba(245, 158, 11, 0.38),
+        0 0 0 4px rgba(255, 251, 235, 0.85),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    #ai-chat-fab:hover {
+      animation-play-state: paused;
+      transform: scale(1.08);
+      box-shadow:
+        0 12px 36px rgba(249, 115, 22, 0.42),
+        0 0 0 5px rgba(254, 243, 199, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+    #ai-chat-fab:active {
+      transform: scale(0.94);
+    }
+    @keyframes fab-breathe {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow:
+          0 8px 28px rgba(245, 158, 11, 0.38),
+          0 0 0 4px rgba(255, 251, 235, 0.85),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      }
+      50% {
+        transform: translateY(-6px) scale(1.05);
+        box-shadow:
+          0 16px 40px rgba(249, 115, 22, 0.45),
+          0 0 0 6px rgba(254, 243, 199, 0.95),
+          inset 0 1px 0 rgba(255, 255, 255, 0.75);
+      }
+    }
+    #ai-chat-panel {
+      transform-origin: bottom right;
+      transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1), visibility 0.32s;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(16px) scale(0.92);
+      pointer-events: none;
+    }
+    #ai-chat-panel.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    #ai-chat-messages {
+      scrollbar-width: thin;
+      scrollbar-color: #FCD34D #FEF3C7;
+    }
+    #ai-chat-messages::-webkit-scrollbar { width: 5px; }
+    #ai-chat-messages::-webkit-scrollbar-track { background: #FEF3C7; border-radius: 3px; }
+    #ai-chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.5);
+      border-radius: 3px;
+    }
+    @keyframes chatBubbleIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ai-chat-bubble {
+      animation: chatBubbleIn 0.35s ease-out both;
+    }
+    @keyframes typingDot {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    .ai-typing-dot {
+      animation: typingDot 1.2s ease-in-out infinite;
+    }
+    .ai-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .ai-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+    .ai-task-add-btn {
+      margin-top: 0.25rem;
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 2px solid #F97316;
+      background: linear-gradient(135deg, #FFF7ED 0%, #FFFBEB 100%);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #C2410C;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12);
+    }
+    .ai-task-add-btn:not(:disabled):hover {
+      background: linear-gradient(135deg, #FFEDD5 0%, #FEF3C7 100%);
+      border-color: #EA580C;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.22);
+    }
+    .ai-task-add-btn:not(:disabled):active {
+      transform: translateY(0) scale(0.98);
+    }
+    .ai-task-add-btn.is-added,
+    .ai-task-add-btn:disabled {
+      cursor: default;
+      border-color: #86EFAC;
+      background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
+      color: #15803D;
+      box-shadow: none;
+      transform: none;
+    }
+    .tab-btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+    .tab-btn { transition: all 0.2s ease; }
+    .countdown-ring {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FFEDD5 100%);
+      border: 3px solid #F59E0B;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
+    }
+    .redeem-card {
+      transition: all 0.2s ease;
+    }
+    .log-item:last-child { border-bottom: none; }
+    /* 输入框聚焦 */
+    .input-focus:focus {
+      outline: none;
+      border-color: #F59E0B;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45);
+    }
+    /* 3D 橘猫呼吸微动效 */
+    #pawn-cat {
+      animation: breathe 3.5s ease-in-out infinite;
+      position: relative;
+      z-index: 30;
+    }
+    /* 橘猫安全区：泡泡轨道不得侵入此区域 */
+    #cat-safe-zone {
+      position: relative;
+      z-index: 30;
+      isolation: isolate;
+    }
+    #cat-scene {
+      /* 为四角泡泡轨道预留空间 */
+      min-height: 260px;
+    }
+    #speech-bubbles {
+      z-index: 10;
+    }
+    /* 话语小泡泡 — 胶囊椭圆造型 + 磨砂质感 */
+    .speech-bubble {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      line-height: 1.25;
+      box-shadow:
+        0 2px 12px rgba(245, 158, 11, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+    /* 泡泡轨道槽位 — 分布在猫咪外轮廓四角，不覆盖中央 */
+    .bubble-slot-tl { top: 6px;  left: 0;   right: auto; bottom: auto; }
+    .bubble-slot-tr { top: 6px;  right: 0;  left: auto; bottom: auto; }
+    .bubble-slot-bl { bottom: 6px; left: 0;  right: auto; top: auto; }
+    .bubble-slot-br { bottom: 6px; right: 0; left: auto; top: auto; }
+    @keyframes breathe {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-5px) scale(1.02); }
+    }
+    /* 话语小泡泡浮动（与猫咪呼吸错开） */
+    @keyframes bubble-float-1 {
+      0%, 100% { transform: translate(0, 0); }
+      50%      { transform: translate(-2px, -5px); }
+    }
+    @keyframes bubble-float-2 {
+      0%, 100% { transform: translate(0, 0); }
+      50%      { transform: translate(2px, -4px); }
+    }
+    @keyframes bubble-float-3 {
+      0%, 100% { transform: translate(0, 0); }
+      50%      { transform: translate(-2px, 4px); }
+    }
+    @keyframes bubble-float-4 {
+      0%, 100% { transform: translate(0, 0); }
+      50%      { transform: translate(2px, 5px); }
+    }
+    .speech-bubble.float-1 { animation: bubble-float-1 4.2s ease-in-out infinite; }
+    .speech-bubble.float-2 { animation: bubble-float-2 3.6s ease-in-out infinite 0.4s; }
+    .speech-bubble.float-3 { animation: bubble-float-3 4.8s ease-in-out infinite 0.8s; }
+    .speech-bubble.float-4 { animation: bubble-float-4 3.9s ease-in-out infinite 1.2s; }
+    /* 泡泡破裂 */
+    @keyframes bubblePop {
+      to { transform: scale(1.3); opacity: 0; }
+    }
+    .speech-bubble.pop {
+      animation: bubblePop 200ms ease-out forwards !important;
+      pointer-events: none;
+    }
+    /* 泡泡重生淡入 */
+    @keyframes bubbleAppear {
+      from { opacity: 0; transform: scale(0.75); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .speech-bubble.appear {
+      animation: bubbleAppear 450ms ease-out both;
+    }
+    /* 主对话框文字滑落淡入 */
+    @keyframes dialogueSlideIn {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #boss-dialogue.slide-in {
+      animation: dialogueSlideIn 0.45s ease-out both;
+    }
+    /* 余额浮动加减标签 */
+    .balance-float-tag {
+      position: absolute;
+      left: 100%;
+      top: -2px;
+      margin-left: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 1;
+      transform: translate(0, 0);
+      z-index: 10;
+    }
+    .balance-float-tag.earn {
+      transition: transform 1s ease-out, opacity 1s ease-out;
+    }
+    .balance-float-tag.spend {
+      transition: transform 1s ease-out, opacity 1s ease-out;
+    }
+    .balance-float-tag.earn.animate {
+      transform: translate(10px, -15px);
+      opacity: 0;
+    }
+    .balance-float-tag.spend.animate {
+      transform: translate(0, -18px);
+      opacity: 0;
+    }
+    /* 余额数字结算弹动 */
+    @keyframes balancePop {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(1.12); }
+      65%  { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+    #balance.balance-pop {
+      animation: balancePop 0.45s ease-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-amber-50/50 font-sans text-amber-950 antialiased">
+
+  <!-- 页面容器 -->
+  <div class="mx-auto max-w-6xl px-8 py-6">
+
+    <!-- ========== 顶部状态栏 ========== -->
+    <header class="mb-6 overflow-hidden rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-100/90 via-orange-50 to-amber-100/90 shadow-shop backdrop-blur-sm">
+      <div class="grid grid-cols-[auto_1fr_auto] items-center gap-6 px-8 py-5">
+
+        <!-- 左侧：徽章 + 掌柜标签 -->
+        <div class="flex items-center space-x-3">
+          <img
+            src="huizhang.png"
+            alt="徽章"
+            class="h-12 w-12 shrink-0 object-contain"
+          />
+          <span class="rounded-full border border-amber-300/80 bg-amber-50/90 px-3 py-1 text-sm font-medium tracking-wide text-amber-800 shadow-sm">
+            掌柜 · 当当
+          </span>
+        </div>
+
+        <!-- 中间：产品名 -->
+        <div class="text-center">
+          <h1 class="font-display text-3xl font-bold tracking-widest text-amber-900 drop-shadow-sm">
+            当当的时间当铺
+          </h1>
+          <p class="mt-0.5 text-xs tracking-[0.3em] text-amber-600/60">— 时间典当 · 休息兑换 —</p>
+        </div>
+
+        <!-- 右侧：时间币余额 -->
+        <div id="balance-box" class="balance-box rounded-2xl px-6 py-3">
+          <p class="whitespace-nowrap font-display text-xl font-bold text-amber-950">
+            🪙 我的币:
+            <span id="balance-wrap" class="relative mx-1 inline-block align-middle">
+              <span id="balance" class="inline-block min-w-[2ch] text-3xl font-extrabold text-orange-600">0</span>
+            </span>
+            时间币
+          </p>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ========== 主体双栏布局 ========== -->
+    <div class="mb-6 grid grid-cols-12 gap-6">
+
+      <!-- 左栏：橘猫老板对话区 -->
+      <aside class="col-span-4">
+        <div class="sticky top-6 flex min-h-[420px] flex-col overflow-hidden rounded-2xl border-2 border-amber-200/90 bg-gradient-to-b from-amber-50 via-orange-50/60 to-amber-100/40 shadow-shop-lg">
+
+          <!-- 看板标题 -->
+          <div class="border-b border-amber-200/80 bg-amber-100/70 px-5 py-3">
+            <h2 class="flex items-center gap-2 font-display text-lg font-semibold text-amber-900">
+              <i class="fa-solid fa-store text-orange-500"></i>
+              橘猫掌柜台
+            </h2>
+          </div>
+
+          <!-- 橘猫形象 + 围绕式话语泡泡 + 主对话框 -->
+          <div class="flex flex-1 flex-col items-center px-5 pt-4 pb-5">
+            <!-- 3D 橘猫场景：外层轨道 + 中央安全区 -->
+            <div id="cat-scene" class="relative mx-auto mb-3 w-full max-w-[280px] px-2 py-2">
+              <!-- 泡泡轨道层（z-10，位于猫咪下层且仅占据四角） -->
+              <div id="speech-bubbles" class="pointer-events-none absolute inset-0 z-10"></div>
+              <!-- 猫咪安全区（z-30，泡泡严禁覆盖） -->
+              <div id="cat-safe-zone" class="relative z-30 mx-auto my-4 flex h-40 w-40 items-center justify-center">
+                <img
+                  src="cat.png"
+                  id="pawn-cat"
+                  alt="橘猫掌柜当当"
+                  class="mx-auto h-36 w-36 object-contain"
+                />
+                <span class="absolute -bottom-1 right-0 z-30 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-orange-600 shadow-sm ring-1 ring-amber-200 backdrop-blur-sm">
+                  营业中
+                </span>
+              </div>
+            </div>
+
+            <!-- 主对话框（泡泡破裂后文字滑落至此） -->
+            <div class="retro-bubble mt-2 w-full rounded-2xl px-5 pb-5 pt-6">
+              <p class="mb-1.5 font-display text-sm font-bold text-orange-600">
+                <i class="fa-solid fa-comment-dots mr-1"></i>橘猫当当：
+              </p>
+              <p id="boss-dialogue" class="text-base leading-relaxed text-amber-900/90">
+                客官，您这有多少分钟，打算当点啥？😼
+              </p>
+            </div>
+          </div>
+
+          <!-- 快捷提示 -->
+          <div class="mt-auto border-t border-amber-200/60 bg-amber-100/50 px-5 py-4">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-amber-600/70">今日小贴士</p>
+            <ul class="space-y-2 text-sm text-amber-800/80">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-lightbulb mt-0.5 text-amber-500"></i>
+                <span>典当时间可换取时间币，1 分钟 = 1 币</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-star mt-0.5 text-orange-400"></i>
+                <span>时间币可在「兑换休息」中换取放松时光</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 右栏：主功能区 -->
+      <main class="col-span-8">
+        <div class="overflow-hidden rounded-2xl border border-amber-200/80 bg-white/80 shadow-shop backdrop-blur-sm">
+
+          <!-- Tab 栏 -->
+          <nav class="flex gap-2 border-b border-amber-100 bg-amber-50/60 p-3" role="tablist">
+            <button
+              class="tab-btn btn-interactive active flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-amber-800 transition-all duration-200"
+              data-tab="pawn"
+              role="tab"
+              aria-selected="true"
+            >
+              <i class="fa-solid fa-hourglass-half"></i>
+              典当时间
+            </button>
+            <button
+              class="tab-btn btn-interactive flex flex-1 items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-amber-800 transition-all duration-200"
+              data-tab="redeem"
+              role="tab"
+              aria-selected="false"
+            >
+              <i class="fa-solid fa-mug-saucer"></i>
+              兑换休息
+            </button>
+            <button
+              class="tab-btn btn-interactive flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-amber-800 transition-all duration-200"
+              data-tab="custom"
+              role="tab"
+              aria-selected="false"
+            >
+              <i class="fa-solid fa-list-check"></i>
+              自律清单
+            </button>
+          </nav>
+
+          <!-- Tab 内容容器 -->
+          <div id="tab-content-wrap" class="relative">
+          <!-- Tab 内容：典当时间 -->
+          <section id="panel-pawn" class="tab-panel is-visible fade-in active p-6" role="tabpanel">
+            <div class="mb-5">
+              <h3 class="font-display text-xl font-bold text-amber-900">典当你的时间</h3>
+              <p class="mt-1 text-sm text-amber-700/70">输入碎片时长，匹配硬核自律任务，完成后领取时间币</p>
+            </div>
+
+            <!-- 时长输入 + 匹配任务 -->
+            <div id="pawn-input-area" class="rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex items-center gap-3">
+                <input
+                  id="pawn-minutes"
+                  type="number"
+                  min="1"
+                  max="30"
+                  step="1"
+                  placeholder="输入你的碎片时长 (1-30分钟)"
+                  class="input-focus flex-1 rounded-lg border border-amber-200 bg-white px-4 py-2.5 text-amber-900 transition-all duration-200 placeholder:text-amber-400/70 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+                <button
+                  id="btn-match-tasks"
+                  class="btn-interactive shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-amber-600 hover:to-orange-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none disabled:hover:shadow-md"
+                >
+                  <i class="fa-solid fa-shuffle mr-1"></i>
+                  匹配任务
+                </button>
+              </div>
+            </div>
+
+            <!-- 4 条随机任务卡片 -->
+            <div id="task-grid" class="mt-5 hidden grid grid-cols-2 gap-4"></div>
+
+            <!-- 开始典当 -->
+            <div id="start-pawn-area" class="mt-5 hidden text-center">
+              <button
+                id="btn-start-pawn"
+                class="btn-interactive rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 px-10 py-3 text-base font-bold text-white shadow-lg transition-all duration-200 hover:from-orange-600 hover:to-amber-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
+              >
+                <i class="fa-solid fa-play mr-2"></i>开始典当
+              </button>
+            </div>
+
+            <!-- 倒计时进行中 -->
+            <div id="pawn-active-area" class="mt-5 hidden">
+              <div class="countdown-ring mx-auto max-w-md rounded-2xl px-8 py-8 text-center">
+                <p class="mb-1 text-sm font-medium text-amber-700">典当进行中</p>
+                <p id="active-task-name" class="mb-4 text-sm text-amber-600/80"></p>
+                <div id="countdown-display" class="font-display text-6xl font-bold tracking-wider text-orange-600">00:00</div>
+                <p class="mt-2 text-xs text-amber-600/60">倒计时结束前请专注完成任务</p>
+                <button
+                  id="btn-complete-pawn"
+                  class="btn-interactive mt-6 rounded-xl border-2 border-orange-400 bg-white px-8 py-2.5 text-sm font-semibold text-orange-600 transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700"
+                >
+                  <i class="fa-solid fa-circle-check mr-1"></i>我完成了
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 内容：兑换休息 -->
+          <section id="panel-redeem" class="tab-panel p-6" role="tabpanel">
+            <div class="mb-5">
+              <h3 class="font-display text-xl font-bold text-amber-900">兑换休息时光</h3>
+              <p class="mt-1 text-sm text-amber-700/70">用时间币换取合法摸鱼凭证，努力换来的快乐，不必有负罪感</p>
+            </div>
+
+            <div id="redeem-grid" class="grid grid-cols-2 gap-4 xl:grid-cols-3"></div>
+          </section>
+
+          <!-- Tab 内容：自律任务清单 -->
+          <section id="panel-custom" class="tab-panel p-6" role="tabpanel">
+            <div class="mb-5">
+              <h3 class="font-display text-xl font-bold text-amber-900">自律任务清单</h3>
+              <p class="mt-1 text-sm text-amber-700/70">写下你想挑战的事，设定时间币奖励，一键开始典当</p>
+            </div>
+
+            <!-- 创建任务区 -->
+            <div id="custom-task-create" class="rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <input
+                  id="custom-task-text"
+                  type="text"
+                  maxlength="80"
+                  placeholder="想做点什么硬核的事？"
+                  class="input-focus min-w-0 flex-1 rounded-lg border border-amber-200 bg-white px-4 py-2.5 text-amber-900 transition-all duration-200 placeholder:text-amber-400/70 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+                <input
+                  id="custom-task-coins"
+                  type="number"
+                  min="1"
+                  max="30"
+                  step="1"
+                  placeholder="值多少币"
+                  class="input-focus w-full shrink-0 rounded-lg border border-amber-200 bg-white px-4 py-2.5 text-amber-900 transition-all duration-200 placeholder:text-amber-400/70 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500 sm:w-28"
+                />
+                <button
+                  id="btn-add-custom-task"
+                  class="btn-interactive shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-amber-600 hover:to-orange-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
+                >
+                  <i class="fa-solid fa-plus mr-1"></i>
+                  添加任务
+                </button>
+              </div>
+            </div>
+
+            <!-- 自定义任务列表 -->
+            <div id="custom-task-list" class="mt-5 space-y-3"></div>
+            <div id="custom-task-empty" class="mt-8 hidden py-10 text-center text-amber-500/60">
+              <i class="fa-solid fa-clipboard-list mb-3 block text-3xl"></i>
+              <p class="text-sm">清单还是空的</p>
+              <p class="mt-1 text-xs text-amber-400/80">在上方写下任务并设定时间币，开始你的硬核挑战吧</p>
+            </div>
+          </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ========== 底部：最近的当铺记录 ========== -->
+    <footer class="relative z-0 rounded-2xl border border-amber-200/80 bg-white/70 shadow-shop backdrop-blur-sm">
+      <div class="flex shrink-0 items-center justify-between border-b border-amber-100 bg-amber-50/60 px-8 py-4">
+        <h2 class="flex items-center gap-2 font-display text-xl font-semibold text-amber-900">
+          <i class="fa-solid fa-history text-amber-500"></i>
+          最近的当铺记录
+        </h2>
+        <span id="log-count" class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">暂无记录</span>
+      </div>
+
+      <div
+        id="log-list"
+        class="record-scroll relative z-10 max-h-64 overflow-y-auto overscroll-y-contain px-8 py-2"
+        tabindex="0"
+        role="log"
+        aria-label="当铺历史记录"
+      >
+        <div id="log-empty" class="py-12 text-center text-amber-500/60">
+          <i class="fa-solid fa-inbox mb-3 block text-3xl"></i>
+          <p class="text-sm">暂无当铺记录</p>
+          <p class="mt-1 text-xs text-amber-400/80">完成典当或兑换后，记录会显示在这里，可滚轮浏览</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 页脚版权 -->
+    <p class="mt-4 text-center text-xs text-amber-600/50">
+      © 2026 当当时间当铺 · 橘猫老板陪你慢慢生活
+    </p>
+  </div>
+
+  <!-- ========== AI 聊天悬浮组件（PC 端） ========== -->
+  <div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50 flex flex-col-reverse items-end gap-3">
+    <!-- 悬浮按钮 FAB -->
+    <button
+      id="ai-chat-fab"
+      type="button"
+      class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-amber-300/80 bg-gradient-to-br from-amber-100 via-orange-50 to-amber-200 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+      aria-label="打开心理树洞"
+      aria-expanded="false"
+      aria-controls="ai-chat-panel"
+    >
+      <img
+        src="AI Agent.png"
+        alt="掌柜当当 AI"
+        class="h-14 w-14 object-contain drop-shadow-sm"
+        draggable="false"
+      />
+    </button>
+
+    <!-- 聊天面板 -->
+    <div
+      id="ai-chat-panel"
+      class="flex h-[500px] w-96 flex-col overflow-hidden rounded-2xl border border-amber-200 bg-amber-50/95 shadow-2xl backdrop-blur-md"
+      role="dialog"
+      aria-label="掌柜当当的心理树洞"
+    >
+      <!-- 头部 -->
+      <div class="flex shrink-0 items-center justify-between border-b border-amber-200/80 bg-gradient-to-r from-amber-100/90 to-orange-50/90 px-4 py-3">
+        <div class="flex items-center gap-2">
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-orange-500">
+            <i class="fa-solid fa-paw text-sm"></i>
+          </span>
+          <h4 class="font-display text-sm font-bold text-amber-900">掌柜当当的心理树洞 🐾</h4>
+        </div>
+        <button
+          id="ai-chat-close"
+          type="button"
+          class="flex h-8 w-8 items-center justify-center rounded-lg text-amber-600/70 transition-all duration-200 hover:bg-amber-200/60 hover:text-amber-900"
+          aria-label="关闭心理树洞"
+        >
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- 消息区 -->
+      <div
+        id="ai-chat-messages"
+        class="flex-1 space-y-3 overflow-y-auto overscroll-y-contain px-4 py-4"
+      >
+        <div class="ai-chat-bubble flex justify-start">
+          <div class="max-w-[85%] rounded-2xl rounded-tl-sm border border-amber-200/80 bg-white/90 px-3.5 py-2.5 text-sm leading-relaxed text-amber-900 shadow-sm">
+            喵～欢迎来到心理树洞！我是掌柜当当，学累了、焦虑了、或者只是想找人聊聊，都可以跟我说哦 🐱
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部输入区 -->
+      <div class="shrink-0 border-t border-amber-200/80 bg-amber-100/50 p-3">
+        <div class="flex items-center gap-2">
+          <input
+            id="ai-chat-input"
+            type="text"
+            maxlength="500"
+            placeholder="跟当当说说心里话…"
+            class="input-focus min-w-0 flex-1 rounded-xl border border-amber-200 bg-white px-3.5 py-2.5 text-sm text-amber-900 placeholder:text-amber-400/70 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+          />
+          <button
+            id="ai-chat-send"
+            type="button"
+            class="btn-interactive shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-amber-600 hover:to-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            发送
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'dangdang_pawnshop_data';
+    const LOG_DISPLAY_LIMIT = 50;
+
+    /* ========== AI 代理 API（密钥仅存于后端，前端绝不硬编码 KEY） ========== */
+    const CHAT_API_URL = 'http://localhost:3000/api/chat';
+
+    /**
+     * 向本地安全后端发起 AI 聊天请求
+     * @param {Array<{role: string, content: string}>} messages - OpenAI 格式消息历史
+     * @returns {Promise<object>} DeepSeek 完整响应 JSON
+     */
+    async function callChatAPI(messages) {
+      const res = await fetch(CHAT_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const msg = data.error || data.detail?.error?.message || res.statusText;
+        throw new Error(msg || 'AI 请求失败');
+      }
+
+      return data;
+    }
+
+    /** 从 DeepSeek 响应中提取助手回复文本 */
+    function extractAssistantReply(response) {
+      return response?.choices?.[0]?.message?.content?.trim() || '';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    /* ========== AI 聊天悬浮组件 ========== */
+    /** 扫描 AI 回复末尾的隐藏任务暗号 */
+    const AI_TASK_TAG_REGEX = /\|\|TASK:\s*(.*?)\s*\|\s*COINS:\s*(\d+)\s*\|\|/i;
+
+    let aiChatOpen = false;
+    let aiChatSending = false;
+    const aiChatHistory = [];
+
+    const aiChatFab = document.getElementById('ai-chat-fab');
+    const aiChatPanel = document.getElementById('ai-chat-panel');
+    const aiChatClose = document.getElementById('ai-chat-close');
+    const aiChatMessages = document.getElementById('ai-chat-messages');
+    const aiChatInput = document.getElementById('ai-chat-input');
+    const aiChatSend = document.getElementById('ai-chat-send');
+
+    /**
+     * 解析 ||TASK: … | COINS: …|| 暗号
+     * @returns {{ displayText: string, taskText: string, coins: number } | null}
+     */
+    function parseAiTaskTag(rawText) {
+      if (!rawText || typeof rawText !== 'string') return null;
+
+      const match = rawText.match(AI_TASK_TAG_REGEX);
+      if (!match) return null;
+
+      const taskText = match[1].trim();
+      const coins = parseInt(match[2], 10);
+      if (!taskText || isNaN(coins)) return null;
+
+      const displayText = rawText.replace(AI_TASK_TAG_REGEX, '').trim();
+      return {
+        displayText,
+        taskText,
+        coins: Math.max(1, Math.min(30, coins))
+      };
+    }
+
+    /** 将 AI 建议的任务一键植入自律清单 */
+    function handleAiTaskAddToList(taskPayload, btnEl) {
+      if (!btnEl || btnEl.disabled) return;
+
+      if (pawnSession.isLocked) {
+        updateBossDialogue('典当进行中，稍后再加入清单哦～😼');
+        return;
+      }
+
+      const text = taskPayload.taskText.trim();
+      const coins = taskPayload.coins;
+
+      if (!text) return;
+
+      const alreadyExists = state.customTasks.some(
+        t => t.text === text && t.coins === coins
+      );
+
+      if (alreadyExists) {
+        btnEl.disabled = true;
+        btnEl.textContent = '已成功加入清单 ✓';
+        btnEl.classList.add('is-added');
+        return;
+      }
+
+      state.customTasks.unshift({
+        id: generateCustomTaskId(),
+        text,
+        coins
+      });
+
+      saveData();
+      renderCustomTasks();
+
+      btnEl.disabled = true;
+      btnEl.textContent = '已成功加入清单 ✓';
+      btnEl.classList.add('is-added');
+      updateBossDialogue(`喵～「${text}」已挂到自律清单，${coins} 分钟干完领 ${coins} 币！🐾`);
+    }
+
+    function toggleAiChatPanel(forceOpen) {
+      aiChatOpen = typeof forceOpen === 'boolean' ? forceOpen : !aiChatOpen;
+      aiChatPanel.classList.toggle('is-open', aiChatOpen);
+      aiChatFab.setAttribute('aria-expanded', String(aiChatOpen));
+      aiChatFab.setAttribute('aria-label', aiChatOpen ? '收起心理树洞' : '打开心理树洞');
+
+      if (aiChatOpen) {
+        requestAnimationFrame(() => aiChatInput.focus());
+      }
+    }
+
+    function scrollAiChatToBottom() {
+      if (!aiChatMessages) return;
+      aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+    }
+
+    function appendAiChatBubble(role, text) {
+      const isUser = role === 'user';
+      const row = document.createElement('div');
+      row.className = `ai-chat-bubble flex ${isUser ? 'justify-end' : 'justify-start'}`;
+
+      let displayText = text;
+      let taskPayload = null;
+
+      if (role === 'assistant') {
+        const parsed = parseAiTaskTag(text);
+        if (parsed) {
+          displayText = parsed.displayText;
+          taskPayload = parsed;
+        }
+      }
+
+      const bubble = document.createElement('div');
+      bubble.className = [
+        'flex max-w-[85%] flex-col gap-2 rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm',
+        isUser
+          ? 'rounded-tr-sm border border-orange-300/60 bg-gradient-to-br from-orange-400 to-amber-500 text-white'
+          : 'rounded-tl-sm border border-amber-200/80 bg-white/90 text-amber-900'
+      ].join(' ');
+
+      const textEl = document.createElement('div');
+      textEl.className = 'whitespace-pre-wrap break-words';
+      textEl.innerHTML = escapeHtml(displayText);
+      bubble.appendChild(textEl);
+
+      if (taskPayload) {
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'ai-task-add-btn';
+        addBtn.textContent = `🐾 帮我加入自律清单 (${taskPayload.coins}分钟=${taskPayload.coins}币)`;
+
+        const payload = { taskText: taskPayload.taskText, coins: taskPayload.coins };
+        addBtn.addEventListener('click', () => handleAiTaskAddToList(payload, addBtn));
+
+        if (state.customTasks.some(
+          t => t.text === taskPayload.taskText && t.coins === taskPayload.coins
+        )) {
+          addBtn.disabled = true;
+          addBtn.textContent = '已成功加入清单 ✓';
+          addBtn.classList.add('is-added');
+        }
+
+        bubble.appendChild(addBtn);
+      }
+
+      row.appendChild(bubble);
+      aiChatMessages.appendChild(row);
+      scrollAiChatToBottom();
+      return row;
+    }
+
+    function showAiChatTyping() {
+      const row = document.createElement('div');
+      row.id = 'ai-chat-typing';
+      row.className = 'ai-chat-bubble flex justify-start';
+      row.innerHTML = `
+        <div class="flex items-center gap-1 rounded-2xl rounded-tl-sm border border-amber-200/80 bg-white/90 px-4 py-3 shadow-sm">
+          <span class="ai-typing-dot inline-block h-2 w-2 rounded-full bg-amber-400"></span>
+          <span class="ai-typing-dot inline-block h-2 w-2 rounded-full bg-amber-400"></span>
+          <span class="ai-typing-dot inline-block h-2 w-2 rounded-full bg-amber-400"></span>
+        </div>`;
+      aiChatMessages.appendChild(row);
+      scrollAiChatToBottom();
+    }
+
+    function hideAiChatTyping() {
+      document.getElementById('ai-chat-typing')?.remove();
+    }
+
+    function setAiChatSending(sending) {
+      aiChatSending = sending;
+      aiChatSend.disabled = sending;
+      aiChatInput.disabled = sending;
+    }
+
+    async function sendAiChatMessage() {
+      if (aiChatSending) return;
+
+      const text = aiChatInput.value.trim();
+      if (!text) return;
+
+      appendAiChatBubble('user', text);
+      aiChatHistory.push({ role: 'user', content: text });
+      aiChatInput.value = '';
+      setAiChatSending(true);
+      showAiChatTyping();
+
+      try {
+        const response = await callChatAPI([...aiChatHistory]);
+        const reply = extractAssistantReply(response) || '喵...本掌柜一时语塞，你再跟我说说？';
+        hideAiChatTyping();
+
+        const parsed = parseAiTaskTag(reply);
+        appendAiChatBubble('assistant', reply);
+        aiChatHistory.push({
+          role: 'assistant',
+          content: parsed ? parsed.displayText : reply
+        });
+      } catch (err) {
+        hideAiChatTyping();
+        appendAiChatBubble('assistant', '喵呜，好像连不上后端了～请先运行 npm start，再跟我聊哦 😿');
+        console.warn('AI 聊天失败:', err);
+      } finally {
+        setAiChatSending(false);
+        aiChatInput.focus();
+      }
+    }
+
+    function initAiChatWidget() {
+      aiChatFab?.addEventListener('click', () => toggleAiChatPanel());
+      aiChatClose?.addEventListener('click', () => toggleAiChatPanel(false));
+      aiChatSend?.addEventListener('click', sendAiChatMessage);
+      aiChatInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendAiChatMessage();
+        }
+      });
+    }
+
+    /* ========== 全局状态 ========== */
+    const state = {
+      balance: 0,
+      logs: [],
+      customTasks: []
+    };
+
+    /**
+     * 区间化任务库 · 6 区间 × 20 任务 = 120 条
+     * 原则：有多少时间，干多少事情（5 分钟一跨度）
+     */
+    const TASK_INTERVALS = [
+      {
+        id: 'tier1',
+        label: '区间一：1-5分钟 · 微习惯与高频微复盘',
+        min: 1,
+        max: 5,
+        tasks: [
+          '【护眼】远眺窗外绿色植物或闭眼做眼球放松操 2 分钟',
+          '【整理】快速清理书桌上的杂物，将文具归位',
+          '【技能】在小卡片上默写 3 个今天刚学的信号与系统核心公式',
+          '【学业】快速翻阅本节课前 3 页 PPT，标记 2 个不懂的关键词',
+          '【健康】起身站立做 10 次标准深蹲，激活下肢血液循环',
+          '【复盘】用 30 秒回顾刚才 25 分钟番茄钟的最大收获',
+          '【心理】闭眼深呼吸 5 次，默念一条今日积极自我暗示',
+          '【整理】将手机桌面与学习文件夹各删除 3 个冗余图标/文件',
+          '【技能】用快捷键在 IDE 中完成一次代码格式化与缩进对齐',
+          '【学业】口头快读 1 页英语四级核心词汇表，圈出 2 个生词',
+          '【健康】做 1 组颈肩拉伸（左右各 3 次），缓解屏幕疲劳',
+          '【管理】在便签上写下今日 3 件最重要的事，贴于显示器旁',
+          '【技能】检查实验台示波器探头接地与同步状态，记录 1 条注意事项',
+          '【复盘】打开日历扫视明日课表，标记 1 项需提前准备的事项',
+          '【学业】精读考研/考公动机信中的 1 句话，标出最有力的表达',
+          '【整理】清空浏览器多余标签页，将有价值链接存入书签夹',
+          '【心理】用 3 句话写完今日学习日记的开头，建立记录惯性',
+          '【技能】制作 2 张闪卡：调制方式定义 + 典型应用场景',
+          '【健康】平板支撑 1 分钟，激活核心肌群与专注力',
+          '【复盘】对照坐姿检查清单，纠正含胸驼背与屏幕距离'
+        ]
+      },
+      {
+        id: 'tier2',
+        label: '区间二：6-10分钟 · 短时高凝聚专注',
+        min: 6,
+        max: 10,
+        tasks: [
+          '【学业】高效背诵 5 个大学英语六级核心词汇并造句',
+          '【管理】列出接下来 3 小时的高优先级任务清单（TODO List）',
+          '【心理】进行 8 分钟正念呼吸，清空大脑无用信息碎片',
+          '【学业】完成 3 道电路分析节点电压法基础题并核对步骤',
+          '【学业】整理线性代数某一章 5 条核心定理到一页速记纸',
+          '【技能】跟读 1 段 5 分钟英语日常听力，提炼 1 句主旨',
+          '【管理】拆解本周 3 个学习目标并分配可执行时间段',
+          '【技能】练习 Git 基础操作：add / commit / push 完成 1 次提交',
+          '【学业】订正昨日作业前 5 道错题，标注错误根因类型',
+          '【学业】限时 8 分钟刷 1 套高数/信号期末卷中的傅里叶变换小题',
+          '【技能】朗读 1 篇英文论文摘要 2 遍，提升学术口语流畅度',
+          '【健康】完成 6 分钟自重训练（俯卧撑/靠墙静蹲任选组合）',
+          '【心理】模拟 3 分钟课堂汇报开场白，录音回放自我纠偏',
+          '【复盘】写下今日 3 个做得好的点 + 1 个待改进点',
+          '【学业】回顾上一节课课件，用 3 句话总结核心知识点',
+          '【心理】完成 7 分钟感恩日记：列出 3 件值得感谢的具体小事',
+          '【技能】更新 GitHub 个人主页 README 的项目简介与技能标签',
+          '【社交】给实验搭档发消息确认进度，8 分钟内完成简短对齐',
+          '【整理】将本周课程资料按科目归档到对应文件夹并命名规范',
+          '【健康】远离屏幕做 8 分钟眼保健操 + 颈肩放松组合'
+        ]
+      },
+      {
+        id: 'tier3',
+        label: '区间三：11-15分钟 · 微型技能锤炼与巩固',
+        min: 11,
+        max: 15,
+        tasks: [
+          '【技能】阅读一篇英文科技文献摘要，进行 15 分钟影子跟读',
+          '【学业】复盘并重温昨天做错的电路分析/数学期末真题',
+          '【健康】靠墙端正站立 10 分钟，调整久坐带来的含胸驼背',
+          '【学业】观看 15 分钟专业课录播，结构化笔记提炼 3 个要点',
+          '【技能】在 Python/C 中实现 1 个小函数模块并完成 3 组单元测试',
+          '【学业】完成 1 组 CET-6 口语话题 10 分钟跟读与复述',
+          '【技能】LeetCode 数组专题：限时完成 5 道 Easy 题并总结套路',
+          '【学业】将信号与系统笔记重写为思维导图分支（至少 8 个节点）',
+          '【技能】动态规划入门：完成 2 道经典入门题并手写状态转移方程',
+          '【学业】整理实验报告错误日志，12 分钟内完成 3 处关键修订',
+          '【技能】听 1 段英语新闻/播客，写下 5 个关键词并口头复述',
+          '【健康】完成 11 分钟瑜伽/拉伸序列，重点放松肩颈与腰背',
+          '【学业】精读考研英语阅读 1 篇，标注 5 处长难句结构',
+          '【技能】数字逻辑：完成 1 组真值表与卡诺图化简练习',
+          '【复盘】回顾最近 1 次 Git 提交，写清变更说明与影响范围',
+          '【社交】参与小组讨论后续：12 分钟内整理 3 条可执行结论',
+          '【心理】写下 1 个近期焦虑源，并列出 2 条可立即执行的应对策略',
+          '【技能】练习 5 分钟手写速记，提升课堂笔记清晰度与速度',
+          '【学业】用 MATLAB/Python 绘制 1 组典型信号波形并标注参数',
+          '【管理】对照课表规划明日学习块，完成 12 分钟时间块分配表'
+        ]
+      },
+      {
+        id: 'tier4',
+        label: '区间四：16-20分钟 · 中度结构化输入',
+        min: 16,
+        max: 20,
+        tasks: [
+          '【学业】沉浸式阅读专业课教材 5 页并提炼出核心概念',
+          '【技能】在 IDE 中手写或重构一段通信/算法底层核心逻辑',
+          '【健康】完成一组 15 分钟全身肌肉深层拉伸与抗疲劳放松',
+          '【学业】无干扰推导 2 道傅里叶/拉普拉斯变换相关习题',
+          '【技能】精听 1 段 15 分钟科技播客并完成影子跟读',
+          '【学业】根据教材第 2 章内容绘制完整章节思维导图框架',
+          '【学业】限时 17 分钟重做 1 套数学期中卷错题并分类订正',
+          '【技能】实现 1 种排序或查找算法，并用 3 组数据验证正确性',
+          '【技能】Multisim 电路仿真：搭建并调试 1 个基础放大电路',
+          '【学业】完成 1 篇 150 词英语科技主题小短文写作',
+          '【复盘】Review 本周编程作业代码，重构 1 处可读性较差模块',
+          '【健康】16 分钟 HIIT 循环（开合跳/高抬腿/波比跳各 1 组）',
+          '【技能】模拟 10 分钟课堂答辩开场 + 核心论点陈述',
+          '【技能】整理 MATLAB Simulink 5 个模块并排查连线错误',
+          '【学业】文献检索：阅读 3 篇摘要并写出 200 字综述开头',
+          '【社交】给父母/家人 18 分钟电话，汇报近期学习进展与计划',
+          '【学业】对比分析 3 种通信调制方案的优缺点与应用场景',
+          '【复盘】整理专业课错题本，18 分钟内攻克 5 个知识盲区',
+          '【心理】19 分钟情绪日记：梳理压力源 + 写下 2 条缓解方案',
+          '【管理】更新本学期里程碑看板，标记已完成与滞后项各 3 条'
+        ]
+      },
+      {
+        id: 'tier5',
+        label: '区间五：21-25分钟 · 标准番茄钟深度沉浸',
+        min: 21,
+        max: 25,
+        tasks: [
+          '【学业】连续无干扰自主闭环深度推导 1 个复杂的物理/工程公式',
+          '【健康】进行 20 分钟自重抗阻力（如下蹲、俯卧撑）力量训练',
+          '【技能】在 LeetCode 上独立攻克并跑通 1 道经典数据结构/算法题',
+          '【学业】沉浸式深读专业课教材 8 页，每页写 1 条摘要批注',
+          '【学业】完成实验报告数据分析与图表绘制核心章节（约 23 分钟）',
+          '【技能】20 分钟英语精读：解析 3 个长难句并翻译全文大意',
+          '【技能】系统设计入门：22 分钟完成 1 道开放型架构思考题',
+          '【技能】LeetCode 中等题专项：完成 5 道树/图相关题目',
+          '【技能】连续编码 25 分钟，实现 1 个小管理系统 CRUD 模块',
+          '【学业】考研英语阅读 1 篇 + 5 道长难句翻译与语法拆解',
+          '【健康】22 分钟有氧快走/爬楼梯，记录心率与体感强度',
+          '【学业】专业课历年真题大题：完成 1 道并做错因分析与变式练习',
+          '【技能】独立完成 1 次实验电路焊接与信号测试并记录数据',
+          '【技能】24 分钟结构化演讲练习：模拟答辩问答 3 轮',
+          '【心理】20 分钟正念冥想 + 情绪日记，梳理近期压力与对策',
+          '【社交】团队项目推进：25 分钟内分工并提交 1 个模块 commit',
+          '【学业】精读 1 篇英文学术论文 Method 部分并写出 4 个质疑点',
+          '【复盘】对照周计划审计进度，更新下周 5 项优先行动',
+          '【技能】完成 1 次代码 Review：优化命名、注释与异常处理',
+          '【健康】21 分钟核心+下肢训练循环（平板/臀桥/弓步各 2 组）'
+        ]
+      },
+      {
+        id: 'tier6',
+        label: '区间六：26-30分钟 · 极限深度专注与高产出',
+        min: 26,
+        max: 30,
+        tasks: [
+          '【学业】完成一整节专业课网课视频的观看并输出核心思维导图',
+          '【健康】换上运动鞋，在操场或跑步机上有氧跑步 3 公里',
+          '【情感】给父母打一个高质长电话，分享近期校园生活与规划',
+          '【学业】限时 28 分钟完成 1 套专业课历年真题仿真自测并订正',
+          '【技能】实验全流程：28 分钟完成电路搭建、数据采集与初步分析',
+          '【社交】与导师/优秀学长 27 分钟深度交流，请教学习方法与规划',
+          '【技能】LeetCode 中等题：独立 AC 1 题并撰写复杂度分析',
+          '【学业】论文/课程报告写作：30 分钟内完成 1 个完整章节初稿',
+          '【健康】26 分钟 HIIT 或节奏跑，记录配速与恢复心率',
+          '【复盘】整理本学期笔记，28 分钟内输出 10 张可复习知识卡片',
+          '【技能】30 分钟结构化答辩模拟：完成开场+问答+总结全流程',
+          '【学业】精读 1 篇专业英文文献并写出 400 字结构化读后感',
+          '【社交】与 1 位久未联系的好友 27 分钟深度对话，更新近况与目标',
+          '【管理】审计本周时间分配，量化输出并制定下周改进方案',
+          '【学业】信号与系统/数字信号处理：1 章核心例题限时强化训练',
+          '【技能】即兴演讲 26 分钟：给定题目完成 3 分钟演讲并录音复盘',
+          '【整理】深度整理数字+物理工作区，建立可持续归档体系（30 分钟）',
+          '【心理】写一封给 30 天后自己的信，设定可量化自律目标与检验标准',
+          '【技能】完成 1 个 GitHub 小功能开发：含 README 与 1 次规范 commit',
+          '【健康】29 分钟综合训练：力量 15 分钟 + 拉伸 14 分钟恢复'
+        ]
+      }
+    ];
+
+    const TASK_CATEGORY_ICONS = {
+      '【学业】': 'fa-graduation-cap',
+      '【技能】': 'fa-laptop-code',
+      '【健康】': 'fa-dumbbell',
+      '【心理】': 'fa-brain',
+      '【社交】': 'fa-user-group',
+      '【复盘】': 'fa-clipboard-list',
+      '【护眼】': 'fa-eye',
+      '【整理】': 'fa-box-open',
+      '【管理】': 'fa-list-check',
+      '【情感】': 'fa-heart'
+    };
+
+    function getTaskIcon(taskText) {
+      for (const [prefix, icon] of Object.entries(TASK_CATEGORY_ICONS)) {
+        if (taskText.startsWith(prefix)) return icon;
+      }
+      return 'fa-star';
+    }
+
+    /** 兑换休息商品池（10 张卡片） */
+    const REDEEM_ITEMS = [
+      { id: 'film',       price: 5,  name: '5分钟追剧许可证',           icon: 'fa-film' },
+      { id: 'gamepad',    price: 10, name: '10分钟游戏摸鱼卡',          icon: 'fa-gamepad' },
+      { id: 'coffee',     price: 15, name: '20分钟自由放松额度',        icon: 'fa-coffee' },
+      { id: 'bolt',       price: 8,  name: 'B站鬼畜视频充电券',         icon: 'fa-bolt' },
+      { id: 'mobile',     price: 12, name: '畅快刷短视频15分钟',        icon: 'fa-mobile-screen' },
+      { id: 'cloud',      price: 6,  name: '无罪恶发呆放空10分钟',      icon: 'fa-cloud' },
+      { id: 'music',      price: 18, name: '专属网易云歌单续航15分钟',  icon: 'fa-music' },
+      { id: 'cookie',     price: 20, name: '盲盒式零食无罪享用券',      icon: 'fa-cookie-bite' },
+      { id: 'book',       price: 25, name: '痛快阅读漫画/小说30分钟',   icon: 'fa-book-open' },
+      { id: 'champagne',  price: 30, name: '全功能场景大放纵45分钟',    icon: 'fa-champagne-glasses' }
+    ];
+
+    /** 当前典当会话 */
+    let pawnSession = {
+      minutes: 0,
+      selectedTask: null,
+      matchedTasks: [],
+      timerId: null,
+      remainingSeconds: 0,
+      isLocked: false,
+      isActive: false
+    };
+
+    /* ========== DOM 引用 ========== */
+    const pawnMinutesInput = document.getElementById('pawn-minutes');
+    const btnMatchTasks = document.getElementById('btn-match-tasks');
+    const taskGrid = document.getElementById('task-grid');
+    const startPawnArea = document.getElementById('start-pawn-area');
+    const btnStartPawn = document.getElementById('btn-start-pawn');
+    const pawnActiveArea = document.getElementById('pawn-active-area');
+    const countdownDisplay = document.getElementById('countdown-display');
+    const activeTaskName = document.getElementById('active-task-name');
+    const btnCompletePawn = document.getElementById('btn-complete-pawn');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    const redeemGrid = document.getElementById('redeem-grid');
+    const customTaskTextInput = document.getElementById('custom-task-text');
+    const customTaskCoinsInput = document.getElementById('custom-task-coins');
+    const btnAddCustomTask = document.getElementById('btn-add-custom-task');
+    const customTaskList = document.getElementById('custom-task-list');
+    const customTaskEmpty = document.getElementById('custom-task-empty');
+
+    /* ========== LocalStorage 持久化 ========== */
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          balance: state.balance,
+          logs: state.logs,
+          customTasks: state.customTasks
+        }));
+      } catch (err) {
+        console.warn('saveData 失败:', err);
+      }
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (typeof data.balance === 'number' && !isNaN(data.balance)) {
+          state.balance = Math.max(0, Math.floor(data.balance));
+        }
+        if (Array.isArray(data.logs)) {
+          state.logs = data.logs.filter(log =>
+            log && typeof log.time === 'string' && typeof log.detail === 'string'
+          );
+        }
+        if (Array.isArray(data.customTasks)) {
+          state.customTasks = data.customTasks
+            .filter(t => t && typeof t.id === 'string' && typeof t.text === 'string')
+            .map(t => ({
+              id: t.id,
+              text: String(t.text).trim(),
+              coins: Math.max(1, Math.min(30, Math.floor(Number(t.coins) || 1)))
+            }))
+            .filter(t => t.text.length > 0);
+        }
+        return true;
+      } catch (err) {
+        console.warn('loadData 失败:', err);
+        return false;
+      }
+    }
+
+    /* ========== 通用 UI 更新函数 ========== */
+
+    let displayedBalance = 0;
+    let balanceRafId = null;
+
+    /** 浮动 +/- 标签（赚取向右上方漂，消耗向上方漂） */
+    function showBalanceFloatTag(delta) {
+      const wrap = document.getElementById('balance-wrap');
+      if (!wrap || delta === 0) return;
+
+      const isEarn = delta > 0;
+      const tag = document.createElement('span');
+      tag.className = [
+        'balance-float-tag',
+        isEarn ? 'earn text-emerald-500' : 'spend text-rose-500',
+        'font-bold text-lg'
+      ].join(' ');
+      tag.textContent = `${isEarn ? '+' : ''}${Math.abs(delta)} 🪙`;
+      wrap.appendChild(tag);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => tag.classList.add('animate'));
+      });
+
+      const cleanup = () => { if (tag.parentNode) tag.remove(); };
+      tag.addEventListener('transitionend', cleanup, { once: true });
+      setTimeout(cleanup, 1100);
+    }
+
+    /** 数字平滑滚动插值（800ms，ease-out） */
+    function animateBalanceNumber(from, to, duration = 800) {
+      const el = document.getElementById('balance');
+      if (!el) return;
+
+      if (balanceRafId !== null) {
+        cancelAnimationFrame(balanceRafId);
+        balanceRafId = null;
+      }
+
+      const startTime = performance.now();
+      const diff = to - from;
+
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(from + diff * eased);
+        el.textContent = current;
+        displayedBalance = current;
+
+        if (progress < 1) {
+          balanceRafId = requestAnimationFrame(tick);
+        } else {
+          el.textContent = to;
+          displayedBalance = to;
+          balanceRafId = null;
+          triggerBalancePop();
+        }
+      }
+
+      balanceRafId = requestAnimationFrame(tick);
+    }
+
+    /** 结算锁定弹动反馈 */
+    function triggerBalancePop() {
+      const el = document.getElementById('balance');
+      if (!el) return;
+      el.classList.remove('balance-pop');
+      void el.offsetWidth;
+      el.classList.add('balance-pop');
+      el.addEventListener('animationend', () => el.classList.remove('balance-pop'), { once: true });
+    }
+
+    /**
+     * 更新余额 UI
+     * @param {number|undefined} previousBalance - 变动前的余额；不传则立即同步（用于初始化/加载存档）
+     * 注意：调用前 state.balance 必须已是最终值；saveData() 应在此之前完成
+     */
+    function updateBalanceUI(previousBalance) {
+      const el = document.getElementById('balance');
+      if (!el) return;
+
+      const newBalance = state.balance;
+
+      if (previousBalance === undefined) {
+        displayedBalance = newBalance;
+        el.textContent = newBalance;
+        return;
+      }
+
+      const delta = newBalance - previousBalance;
+      if (delta === 0) return;
+
+      showBalanceFloatTag(delta);
+      animateBalanceNumber(previousBalance, newBalance);
+    }
+
+    /* ========== 话语小泡泡系统 ========== */
+    const CHAT_BUBBLES = [
+      '今天当点啥？',
+      '好好专注哦',
+      '不准白嫖休息卡',
+      '学累了就去换张卡',
+      '看什么看，快去学习',
+      '1分钟也是爱~'
+    ];
+
+    const BUBBLE_SLOTS = [
+      { className: 'bubble-slot-tl', float: 'float-1' },
+      { className: 'bubble-slot-tr', float: 'float-2' },
+      { className: 'bubble-slot-bl', float: 'float-3' },
+      { className: 'bubble-slot-br', float: 'float-4' }
+    ];
+
+    const BUBBLE_COUNT = 3 + Math.floor(Math.random() * 2); // 3 或 4
+    let speechBubblePool = [];
+    let bubbleIdCounter = 0;
+
+    function pickRandomChat(exclude) {
+      const pool = CHAT_BUBBLES.filter(t => t !== exclude);
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function pickRandomSlots(count) {
+      const indices = BUBBLE_SLOTS.map((_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      return indices.slice(0, count);
+    }
+
+    function createBubbleElement(text, slotIndex, withAppear) {
+      const slot = BUBBLE_SLOTS[slotIndex];
+      const id = ++bubbleIdCounter;
+      const el = document.createElement('div');
+      el.className = [
+        'speech-bubble',
+        slot.className,
+        'absolute z-10 cursor-pointer',
+        'rounded-full border border-white/50 bg-white/40',
+        'px-4 py-1.5 shadow-sm backdrop-blur-sm',
+        'text-center text-xs font-medium text-amber-900',
+        'whitespace-nowrap select-none',
+        withAppear ? 'appear' : slot.float
+      ].filter(Boolean).join(' ');
+      el.dataset.bubbleId = id;
+      el.textContent = text;
+      return { id, slotIndex, text, element: el };
+    }
+
+    function initSpeechBubbles() {
+      const container = document.getElementById('speech-bubbles');
+      if (!container) return;
+      container.innerHTML = '';
+      speechBubblePool = [];
+      const slots = pickRandomSlots(BUBBLE_COUNT);
+      const usedTexts = [];
+      slots.forEach(slotIndex => {
+        let text = pickRandomChat();
+        while (usedTexts.includes(text)) text = pickRandomChat();
+        usedTexts.push(text);
+        const bubble = createBubbleElement(text, slotIndex, false);
+        container.appendChild(bubble.element);
+        speechBubblePool.push(bubble);
+      });
+    }
+
+    function getAvailableSlot(excludeSlotIndex) {
+      const used = new Set(speechBubblePool.map(b => b.slotIndex));
+      const free = BUBBLE_SLOTS.map((_, i) => i).filter(i => i !== excludeSlotIndex && !used.has(i));
+      if (free.length) return free[Math.floor(Math.random() * free.length)];
+      return Math.floor(Math.random() * BUBBLE_SLOTS.length);
+    }
+
+    function spawnBubbleAfterPop(vacatedSlotIndex) {
+      const container = document.getElementById('speech-bubbles');
+      if (!container) return;
+      const slotIndex = getAvailableSlot(vacatedSlotIndex);
+      const text = pickRandomChat();
+      const bubble = createBubbleElement(text, slotIndex, true);
+      container.appendChild(bubble.element);
+      speechBubblePool.push(bubble);
+      bubble.element.addEventListener('animationend', (e) => {
+        if (e.animationName === 'bubbleAppear') {
+          bubble.element.classList.remove('appear');
+          bubble.element.classList.add(BUBBLE_SLOTS[slotIndex].float);
+        }
+      }, { once: true });
+    }
+
+    function setDialogueText(text) {
+      const el = document.getElementById('boss-dialogue');
+      if (!el) return;
+      el.textContent = text;
+    }
+
+    function animateDialogueText(text) {
+      const el = document.getElementById('boss-dialogue');
+      if (!el) return;
+      el.classList.remove('slide-in');
+      void el.offsetWidth;
+      el.textContent = text;
+      el.classList.add('slide-in');
+      el.addEventListener('animationend', () => el.classList.remove('slide-in'), { once: true });
+    }
+
+    /** 更新橘猫主对话（泡泡破裂 → 文字滑落 → 补新泡泡） */
+    function updateBossDialogue(text, immediate) {
+      if (immediate) {
+        setDialogueText(text);
+        return;
+      }
+
+      const container = document.getElementById('speech-bubbles');
+      const visible = speechBubblePool.filter(b => b.element.parentNode && !b.element.classList.contains('pop'));
+
+      if (!container || visible.length === 0) {
+        animateDialogueText(text);
+        return;
+      }
+
+      const target = visible[Math.floor(Math.random() * visible.length)];
+      const vacatedSlot = target.slotIndex;
+
+      target.element.classList.remove('float-1', 'float-2', 'float-3', 'float-4');
+      target.element.classList.add('pop');
+
+      animateDialogueText(text);
+
+      target.element.addEventListener('animationend', (e) => {
+        if (e.animationName !== 'bubblePop') return;
+        target.element.remove();
+        speechBubblePool = speechBubblePool.filter(b => b.id !== target.id);
+        setTimeout(() => spawnBubbleAfterPop(vacatedSlot), 500);
+      }, { once: true });
+    }
+
+    function formatDateTime(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      const h = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${y}-${m}-${d} ${h}:${min}`;
+    }
+
+    function updateLogsUI() {
+      const listEl = document.getElementById('log-list');
+      const countEl = document.getElementById('log-count');
+      if (!listEl) return;
+
+      const total = state.logs.length;
+      const recent = state.logs.slice(0, LOG_DISPLAY_LIMIT);
+
+      if (countEl) {
+        countEl.textContent = total === 0
+          ? '暂无记录'
+          : total <= LOG_DISPLAY_LIMIT
+            ? `共 ${total} 条`
+            : `共 ${total} 条 · 显示最近 ${LOG_DISPLAY_LIMIT} 条`;
+      }
+
+      if (total === 0) {
+        listEl.innerHTML = `
+          <div id="log-empty" class="py-12 text-center text-amber-500/60">
+            <i class="fa-solid fa-inbox mb-3 block text-3xl"></i>
+            <p class="text-sm">暂无当铺记录</p>
+            <p class="mt-1 text-xs text-amber-400/80">完成典当或兑换后，记录会显示在这里，可滚轮浏览</p>
+          </div>`;
+        return;
+      }
+
+      listEl.innerHTML = recent.map(log => {
+        const isRedeem = log.type === 'redeem';
+        const iconBg = isRedeem ? 'bg-red-100' : 'bg-green-100';
+        const iconColor = isRedeem ? 'text-red-500' : 'text-green-600';
+        const icon = isRedeem ? 'fa-mug-saucer' : 'fa-hourglass-half';
+        const changeColor = isRedeem ? 'text-red-500' : 'text-green-600';
+        const typeLabel = isRedeem ? '兑换出账' : '典当入账';
+
+        return `
+          <div class="log-item flex items-center gap-4 border-b border-amber-100/80 py-4 transition hover:bg-amber-50/40">
+            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconBg} ${iconColor} shadow-sm" title="${typeLabel}">
+              <i class="fa-solid ${icon} text-lg"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-medium text-amber-900">${log.detail}</p>
+              <p class="mt-0.5 text-xs text-amber-600/70">${log.time}</p>
+            </div>
+            <span class="shrink-0 font-display text-base font-bold ${changeColor}">${log.change}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function formatCountdown(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    /* ========== 页面锁定 / 解锁 ========== */
+
+    function lockPawnUI() {
+      pawnSession.isLocked = true;
+      pawnMinutesInput.disabled = true;
+      btnMatchTasks.disabled = true;
+      btnStartPawn.disabled = true;
+      customTaskTextInput.disabled = true;
+      customTaskCoinsInput.disabled = true;
+      btnAddCustomTask.disabled = true;
+      tabBtns.forEach(btn => { btn.disabled = true; });
+      document.querySelectorAll('.task-card').forEach(card => card.classList.add('disabled'));
+      document.querySelectorAll('.custom-task-card').forEach(card => card.classList.add('disabled'));
+    }
+
+    function unlockPawnUI() {
+      pawnSession.isLocked = false;
+      pawnMinutesInput.disabled = false;
+      btnMatchTasks.disabled = false;
+      btnStartPawn.disabled = false;
+      customTaskTextInput.disabled = false;
+      customTaskCoinsInput.disabled = false;
+      btnAddCustomTask.disabled = false;
+      tabBtns.forEach(btn => { btn.disabled = false; });
+      resetPawnPanel();
+      renderCustomTasks();
+    }
+
+    function resetPawnPanel() {
+      pawnSession.selectedTask = null;
+      pawnSession.matchedTasks = [];
+      taskGrid.classList.add('hidden');
+      taskGrid.innerHTML = '';
+      startPawnArea.classList.add('hidden');
+      pawnActiveArea.classList.add('hidden');
+    }
+
+    /* ========== 时长校验 ========== */
+
+    function getValidMinutes() {
+      const raw = pawnMinutesInput.value.trim();
+      if (raw === '') return null;
+      const num = parseInt(raw, 10);
+      if (isNaN(num) || num < 1 || num > 30) return null;
+      return num;
+    }
+
+    function clampMinutesInput() {
+      let val = parseInt(pawnMinutesInput.value, 10);
+      if (pawnMinutesInput.value === '' || isNaN(val)) return;
+      if (val < 1) val = 1;
+      if (val > 30) val = 30;
+      pawnMinutesInput.value = val;
+    }
+
+    /* ========== 区间匹配与任务抽取 ========== */
+
+    /** 根据输入分钟数定位所属区间（1-30） */
+    function getIntervalForMinutes(minutes) {
+      return TASK_INTERVALS.find(interval => minutes >= interval.min && minutes <= interval.max) || null;
+    }
+
+    /** Fisher-Yates 洗牌，保证均匀随机 */
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    /** 从指定区间的 20 个任务中随机抽取 count 条（默认 4） */
+    function pickRandomTasksForMinutes(minutes, count = 4) {
+      const interval = getIntervalForMinutes(minutes);
+      if (!interval) return { interval: null, tasks: [] };
+      const tasks = shuffleArray(interval.tasks).slice(0, count);
+      return { interval, tasks };
+    }
+
+    function resetMatchInput(message) {
+      resetPawnPanel();
+      pawnMinutesInput.value = '';
+      if (message) updateBossDialogue(message);
+      pawnMinutesInput.focus();
+    }
+
+    function renderTaskCards(tasks) {
+      taskGrid.innerHTML = tasks.map((task, i) => `
+        <div class="task-card card-interactive relative rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50/50 p-5 transition-all duration-200" data-index="${i}">
+          <div class="task-check absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-sm text-white shadow-md">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-500 transition-colors duration-200">
+            <i class="fa-solid ${getTaskIcon(task)} text-lg"></i>
+          </div>
+          <h4 class="pr-6 text-sm font-semibold leading-snug text-amber-900">${task}</h4>
+          <p class="mt-2 text-xs text-amber-600/60">点击选择此任务</p>
+        </div>
+      `).join('');
+
+      taskGrid.querySelectorAll('.task-card').forEach(card => {
+        card.addEventListener('click', () => selectTask(parseInt(card.dataset.index, 10)));
+      });
+    }
+
+    function selectTask(index) {
+      if (pawnSession.isLocked) return;
+      pawnSession.selectedTask = pawnSession.matchedTasks[index];
+      taskGrid.querySelectorAll('.task-card').forEach((card, i) => {
+        const isSelected = i === index;
+        card.classList.toggle('selected', isSelected);
+        card.classList.toggle('ring-2', isSelected);
+        card.classList.toggle('ring-orange-500', isSelected);
+      });
+      startPawnArea.classList.remove('hidden');
+    }
+
+    function handleMatchTasks() {
+      if (pawnSession.isLocked) return;
+
+      const raw = pawnMinutesInput.value.trim();
+      if (raw === '') {
+        resetMatchInput('客官，请先输入 1 到 30 之间的整数分钟数哦～😼');
+        return;
+      }
+
+      const num = parseInt(raw, 10);
+      if (isNaN(num) || num < 1 || num > 30) {
+        resetMatchInput('输入无效！请在 1-30 分钟范围内重新输入，本掌柜只收整分钟～😿');
+        return;
+      }
+
+      const { interval, tasks } = pickRandomTasksForMinutes(num, 4);
+      if (!interval || tasks.length === 0) {
+        resetMatchInput('区间匹配失败，请重新输入 1 到 30 之间的分钟数～😼');
+        return;
+      }
+
+      pawnSession.minutes = num;
+      pawnSession.selectedTask = null;
+      pawnSession.matchedTasks = tasks;
+      renderTaskCards(pawnSession.matchedTasks);
+      taskGrid.classList.remove('hidden');
+      startPawnArea.classList.add('hidden');
+      updateBossDialogue(
+        `${num} 分钟落在「${interval.label}」。已从该区间 20 个任务中为您抽 4 个，挑一个，${num} 分钟搞定就结币！`
+      );
+    }
+
+    /* ========== 倒计时与结算 ========== */
+
+    function startCountdown() {
+      pawnSession.remainingSeconds = pawnSession.minutes * 60;
+      pawnSession.isActive = true;
+      countdownDisplay.textContent = formatCountdown(pawnSession.remainingSeconds);
+      activeTaskName.textContent = `当前任务：${pawnSession.selectedTask}`;
+
+      taskGrid.classList.add('hidden');
+      startPawnArea.classList.add('hidden');
+      pawnActiveArea.classList.remove('hidden');
+
+      lockPawnUI();
+      updateBossDialogue(`好嘞！这 ${pawnSession.minutes} 分钟的活，干完就给你结币，加油哦～`);
+
+      pawnSession.timerId = setInterval(() => {
+        pawnSession.remainingSeconds -= 1;
+        if (pawnSession.remainingSeconds <= 0) {
+          countdownDisplay.textContent = '00:00';
+          settlePawn();
+          return;
+        }
+        countdownDisplay.textContent = formatCountdown(pawnSession.remainingSeconds);
+      }, 1000);
+    }
+
+    function settlePawn() {
+      if (!pawnSession.isActive) return;
+      pawnSession.isActive = false;
+
+      if (pawnSession.timerId !== null) {
+        clearInterval(pawnSession.timerId);
+        pawnSession.timerId = null;
+      }
+
+      const minutes = pawnSession.minutes;
+      const now = new Date();
+      const prevBalance = state.balance;
+      state.balance += minutes;
+      state.logs.unshift({
+        type: 'pawn',
+        time: formatDateTime(now),
+        detail: pawnSession.selectedTask
+          ? `完成「${pawnSession.selectedTask}」典当 ${minutes} 分钟，获得 ${minutes} 币`
+          : `典当 ${minutes} 分钟，获得 ${minutes} 币`,
+        change: `+${minutes} 币`
+      });
+
+      saveData();
+      updateBalanceUI(prevBalance);
+      updateLogsUI();
+      updateBossDialogue(`不错不错！给您结 ${minutes} 币，您收好咯～🎉`);
+
+      pawnActiveArea.classList.add('hidden');
+      unlockPawnUI();
+      pawnSession.minutes = 0;
+      pawnSession.selectedTask = null;
+    }
+
+    function handleStartPawn() {
+      if (pawnSession.isLocked) return;
+      if (!pawnSession.selectedTask) {
+        updateBossDialogue('先选一条任务嘛，别急着开工～😼');
+        return;
+      }
+      startCountdown();
+    }
+
+    /* ========== 自律任务清单 ========== */
+
+    function generateCustomTaskId() {
+      return `ct_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function renderCustomTasks() {
+      if (!customTaskList || !customTaskEmpty) return;
+
+      if (state.customTasks.length === 0) {
+        customTaskList.innerHTML = '';
+        customTaskEmpty.classList.remove('hidden');
+        return;
+      }
+
+      customTaskEmpty.classList.add('hidden');
+      customTaskList.innerHTML = state.customTasks.map(task => `
+        <div class="custom-task-card flex items-center gap-4 rounded-xl border-2 border-amber-200 bg-gradient-to-r from-amber-50/80 to-white px-4 py-4" data-id="${task.id}">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-500">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-semibold text-amber-900">${escapeHtml(task.text)}</p>
+            <p class="mt-0.5 text-xs text-amber-600/70">
+              <i class="fa-solid fa-coins mr-1 text-amber-500"></i>
+              奖励 ${task.coins} 时间币 · 典当 ${task.coins} 分钟
+            </p>
+          </div>
+          <div class="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              class="btn-custom-pawn btn-interactive rounded-lg bg-gradient-to-r from-orange-500 to-amber-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:from-orange-600 hover:to-amber-700 disabled:cursor-not-allowed disabled:opacity-50"
+              data-id="${task.id}"
+            >
+              <i class="fa-solid fa-play mr-1"></i>开始典当
+            </button>
+            <button
+              type="button"
+              class="btn-custom-delete flex h-9 w-9 items-center justify-center rounded-lg text-red-400 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+              data-id="${task.id}"
+              title="删除任务"
+              aria-label="删除任务"
+            >
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      customTaskList.querySelectorAll('.btn-custom-pawn').forEach(btn => {
+        btn.addEventListener('click', () => handleStartCustomPawn(btn.dataset.id));
+      });
+      customTaskList.querySelectorAll('.btn-custom-delete').forEach(btn => {
+        btn.addEventListener('click', () => handleDeleteCustomTask(btn.dataset.id));
+      });
+
+      if (pawnSession.isLocked) {
+        customTaskList.querySelectorAll('.custom-task-card').forEach(card => card.classList.add('disabled'));
+      }
+    }
+
+    function handleAddCustomTask() {
+      if (pawnSession.isLocked) return;
+
+      const text = customTaskTextInput.value.trim();
+      const coinsRaw = customTaskCoinsInput.value.trim();
+
+      if (!text) {
+        updateBossDialogue('任务内容不能为空哦，写点硬核的目标吧～😼');
+        customTaskTextInput.focus();
+        return;
+      }
+
+      if (coinsRaw === '') {
+        updateBossDialogue('请设定时间币奖励，1 到 30 之间整数值～😼');
+        customTaskCoinsInput.focus();
+        return;
+      }
+
+      const coins = parseInt(coinsRaw, 10);
+      if (isNaN(coins) || coins < 1 || coins > 30) {
+        updateBossDialogue('时间币须在 1-30 之间，和典当分钟数一一对应哦～😿');
+        customTaskCoinsInput.focus();
+        return;
+      }
+
+      state.customTasks.unshift({
+        id: generateCustomTaskId(),
+        text,
+        coins
+      });
+
+      saveData();
+      renderCustomTasks();
+      customTaskTextInput.value = '';
+      customTaskCoinsInput.value = '';
+      customTaskTextInput.focus();
+      updateBossDialogue(`已加入清单：「${text}」，完成可领 ${coins} 币！`);
+    }
+
+    function handleDeleteCustomTask(taskId) {
+      if (pawnSession.isLocked) return;
+
+      const index = state.customTasks.findIndex(t => t.id === taskId);
+      if (index === -1) return;
+
+      const removed = state.customTasks.splice(index, 1)[0];
+      saveData();
+      renderCustomTasks();
+      updateBossDialogue(`「${removed.text}」已从清单移除～`);
+    }
+
+    function handleStartCustomPawn(taskId) {
+      if (pawnSession.isLocked) return;
+
+      const task = state.customTasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      pawnSession.minutes = task.coins;
+      pawnSession.selectedTask = task.text;
+      pawnSession.matchedTasks = [];
+
+      switchTab('pawn', true);
+      startCountdown();
+    }
+
+    /* ========== 兑换休息 ========== */
+
+    function renderRedeemCards() {
+      redeemGrid.innerHTML = REDEEM_ITEMS.map(item => `
+        <div class="redeem-card card-interactive flex flex-col rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50/90 to-white p-5 transition-all duration-200">
+          <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 text-xl text-orange-500 transition-colors duration-200">
+            <i class="fa-solid ${item.icon}"></i>
+          </div>
+          <h4 class="flex-1 font-semibold leading-snug text-amber-900">${item.name}</h4>
+          <p class="mt-2 font-display text-lg font-bold text-orange-600">🪙 ${item.price} 时间币</p>
+          <button
+            class="btn-redeem btn-interactive mt-4 w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:from-amber-600 hover:to-orange-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
+            data-id="${item.id}"
+          >
+            立即兑换
+          </button>
+        </div>
+      `).join('');
+
+      redeemGrid.querySelectorAll('.btn-redeem').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = REDEEM_ITEMS.find(i => i.id === btn.dataset.id);
+          if (item) handleRedeem(item);
+        });
+      });
+    }
+
+    function handleRedeem(item) {
+      if (pawnSession.isLocked) return;
+
+      if (state.balance < item.price) {
+        updateBossDialogue('客官，您的币不够哦，再多当几分钟攒攒吧～😿');
+        return;
+      }
+
+      const prevBalance = state.balance;
+      state.balance -= item.price;
+      const now = new Date();
+      state.logs.unshift({
+        type: 'redeem',
+        time: formatDateTime(now),
+        detail: `兑换了 ${item.name}`,
+        change: `-${item.price} 币`
+      });
+
+      saveData();
+      updateBalanceUI(prevBalance);
+      updateLogsUI();
+      updateBossDialogue('兑换成功！这是你的合法摸鱼凭证，现在可以安心玩啦。这是你用努力换来的快乐，不用有负罪感哦😼');
+    }
+
+    /* ========== Tab 切换（淡入淡出） ========== */
+    const bossDialogues = {
+      pawn: '客官，您这有多少分钟，打算当点啥？😼',
+      redeem: '攒了不少币了吧？来换点休息，本掌柜给你泡杯茶～☕',
+      custom: '自己的清单自己扛，设定好币数就开干，本掌柜盯着你呢～📋'
+    };
+
+    function switchTab(target, force) {
+      if (!force && pawnSession.isLocked) return;
+
+      const nextPanel = document.getElementById('panel-' + target);
+      const currentPanel = document.querySelector('.tab-panel.active');
+      if (!nextPanel) return;
+      if (currentPanel === nextPanel && !force) return;
+
+      tabBtns.forEach(b => {
+        const isActive = b.dataset.tab === target;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-selected', isActive);
+      });
+
+      if (force) {
+        tabPanels.forEach(p => p.classList.remove('active', 'fade-in', 'fade-out', 'is-visible'));
+        nextPanel.classList.add('is-visible', 'active', 'fade-in');
+        return;
+      }
+
+      if (currentPanel === nextPanel) return;
+
+      if (currentPanel) {
+        currentPanel.classList.remove('fade-in');
+        currentPanel.classList.add('fade-out');
+        setTimeout(() => {
+          currentPanel.classList.remove('active', 'fade-out', 'is-visible');
+          nextPanel.classList.add('is-visible');
+          requestAnimationFrame(() => {
+            nextPanel.classList.add('active', 'fade-in');
+          });
+        }, 250);
+      } else {
+        nextPanel.classList.add('is-visible', 'active', 'fade-in');
+      }
+
+      updateBossDialogue(bossDialogues[target]);
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    /* ========== 事件绑定 ========== */
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+
+      initSpeechBubbles();
+      renderRedeemCards();
+      renderCustomTasks();
+      updateBalanceUI();
+      updateLogsUI();
+      updateBossDialogue('客官，您这有多少分钟，打算当点啥？😼', true);
+
+      pawnMinutesInput.addEventListener('input', clampMinutesInput);
+      pawnMinutesInput.addEventListener('blur', clampMinutesInput);
+      pawnMinutesInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleMatchTasks();
+        }
+      });
+      btnMatchTasks.addEventListener('click', handleMatchTasks);
+      btnStartPawn.addEventListener('click', handleStartPawn);
+      btnCompletePawn.addEventListener('click', settlePawn);
+
+      btnAddCustomTask.addEventListener('click', handleAddCustomTask);
+      customTaskTextInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleAddCustomTask();
+        }
+      });
+      customTaskCoinsInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleAddCustomTask();
+        }
+      });
+
+      initAiChatWidget();
+    });
+  </script>
+</body>
+</html>
