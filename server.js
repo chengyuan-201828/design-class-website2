@@ -5,7 +5,7 @@ const cors = require('cors');
 const axios = require('axios');
 
 const PORT = process.env.PORT || 3000;
-const API_KEY_FILE = path.join(__dirname, '设计思维智能体API.txt');
+const API_KEY = process.env.API_KEY_FILE;
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 /** 「当当」橘猫掌柜 · 系统提示词（仅后端注入，前端不可见） */
