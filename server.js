@@ -55,10 +55,19 @@ function buildChatMessages(clientMessages) {
 
 /** 启动时从本地文件安全读取 API KEY（密钥永不进入前端） */
 function loadApiKey() {
-  if (!fs.existsSync(API_KEY_FILE)) {
+ /* if (!fs.existsSync(API_KEY_FILE)) {
     console.error('\n❌ 错误：找不到密钥文件「设计思维智能体API.txt」');
     console.error('   请在项目根目录创建该文件，并将 DeepSeek API KEY 写入其中（仅一行）。\n');
+    process.exit(1);*/
+   if (!API_KEY) {
+  if (fs.existsSync(API_KEY_FILE)) {
+    API_KEY = fs.readFileSync(API_KEY_FILE, 'utf8').trim();
+  } else {
+    console.error('错误：未能在环境变量或本地文件中找到有效的 API 密钥！');
     process.exit(1);
+  }
+} 
+     
   }
 
   const raw = fs.readFileSync(API_KEY_FILE, 'utf8');
