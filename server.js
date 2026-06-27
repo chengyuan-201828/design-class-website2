@@ -145,6 +145,7 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 // 只有在本地电脑运行（非 Vercel 环境）时，才启动端口监听
+// 只有在本地电脑运行（非 Vercel 环境）时，才启动端口监听
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`\n✅ 当当时间当铺后端已启动`);
@@ -153,12 +154,6 @@ if (!process.env.VERCEL) {
     console.log(`   密钥来源： 环境变量 API_KEY_FILE\n`);
   });
 }
-module.exports = app;
+
 // 必须加上这一行，把整个 app 导出来给 Vercel 托管
-/*module.exports = app;
-app.listen(PORT, () => {
-  console.log(`\n✅ 当当时间当铺后端已启动`);
-  console.log(`   前端页面：http://localhost:${PORT}`);
-  console.log(`   AI 代理：  http://localhost:${PORT}/api/chat`);
-  console.log(`   密钥来源： 设计思维智能体API.txt（已加载，未暴露给浏览器）\n`);
-});*/
+module.exports = app;
